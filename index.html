@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="/style/main.css" />
+    <!--script type="text/javascript" src="script/script.js"></script-->
+</head>
+<body>
+
+    <div class="login-page">
+        <div class="form">
+            <p id="login_incorrect">Username or password is incorrect.</p>
+            <form id="login-form" action="/php/login.php" method="POST">
+            <!--form id="login-form" action="/php/login.php" method="post"-->
+                <input id="login_username" class="credentials_input" type="text" name="username" value="john.chalet@gmail.com" size="15" maxlength="50" placeholder="username">
+                <input id="login_password" class="credentials_input" type="password" name="password" value="hgur8yt7" size="15" maxlength="20" placeholder="password">
+                <input id="ajax-submit" type="button" value="Login" />
+                <!--input type="submit">Login</button-->
+
+                <font size="-1">
+                <a href="https://stgeorgenj.ccbchurch.com/w_password.php">
+                <font color="black"><br/>Forgot Password?<br /></font>
+                </a>
+                <a href="https://stgeorgenj.ccbchurch.com/w_sign_up.php">
+                <font color="black">Sign Up</font>
+                </a>
+                </font>
+            </form>
+        </div>
+    </div>
+    <script type=text/javascript>
+        function login() {
+            console.log("Function: login() entered");
+            
+            var form = document.getElementById("login-form");
+            var action = form.getAttribute("action");
+
+            // gather form data
+            var form_data = new FormData(form);
+            for ([key, value] of form_data.entries()) {
+                console.log(key + ': ' + value);
+            }
+
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    console.log("ReadyState = 4 and Status = 200");
+
+                    console.log("returnCode: " + this.responseText);
+
+
+                    var response = JSON.parse(this.responseText);
+                    var returnCode = response.returnCode;
+                    var message = response.result;
+                    console.log("returnCode: " + returnCode);
+                    console.log("message: " + message);
+                    
+                    if (returnCode == 0) {
+                        window.location.href = "profile.html";
+                    } else if (returnCode == -3) {
+                        document.getElementById("login_incorrect").style.display="inline";
+                    } else {
+                        document.getElementById("login_incorrect").innerHTML = "oops.  Somethings went wrong.";
+                        document.getElementById("login_incorrect").style.display="inline";
+
+                    }
+                }
+            }
+            xhr.open("POST", action, true);
+            //xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            //var data = "username=" + usrname + "&password=" + pswd;
+            console.log(form_data);
+            xhr.send(form_data);
+
+            //window.location.href = "profile.html";
+            console.log("Function: login() exited");
+            return false;
+        }
+        var button = document.getElementById("ajax-submit");
+        var inputPassword = document.getElementById("login_password");
+        button.addEventListener("click", login);
+        inputPassword.addEventListener("keyup", function(event) {
+            event.preventDefault();
+            if (event.keyCode === 13) {
+                button.click();
+            }
+        });
+
+    </script>
+
+</body>
+</html>
+
